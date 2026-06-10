@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import StarField from "@/components/StarField";
+import Navbar from "@/components/Navbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,7 +30,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <StarField />
-        <div className="relative z-[10]">
+        <Navbar />
+        <div style={{ position: "relative", zIndex: 20 }}>
           {children}
         </div>
       </body>
