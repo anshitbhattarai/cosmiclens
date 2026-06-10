@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { IoPlanetSharp, IoStatsChartSharp, IoCompassSharp } from "react-icons/io5";
-import ExploreLeft from "./ExploreLeft";
+import ExploreTab from "./ExploreTab";
 
 const TABS = [
   { id: "explore",   label: "Explore",   Icon: IoPlanetSharp     },
@@ -21,7 +21,7 @@ export default function Tabs() {
   const [active, setActive] = useState<TabId>("explore");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
 
       {/* ── Tab bar ── */}
       <div
@@ -67,38 +67,25 @@ export default function Tabs() {
       </div>
 
       {/* ── Tab content ── */}
-      {active === "explore" ? (
-        <div style={{ display: "flex", height: "calc(100vh - 128px)" }}>
-          <ExploreLeft />
+      <div style={{ flex: 1, minHeight: 0 }}>
+        {active === "explore" ? (
+          <ExploreTab />
+        ) : (
           <div style={{
-            flex: 1,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            height: "100%",
             color: "#475569",
             fontSize: "12px",
             letterSpacing: "0.1em",
             textTransform: "uppercase",
             fontFamily: "var(--font-geist-mono), monospace",
           }}>
-            Select an observation
+            {PLACEHOLDERS[active]}
           </div>
-        </div>
-      ) : (
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "60vh",
-          color: "#475569",
-          fontSize: "12px",
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          fontFamily: "var(--font-geist-mono), monospace",
-        }}>
-          {PLACEHOLDERS[active]}
-        </div>
-      )}
+        )}
+      </div>
 
     </div>
   );
