@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CosmicLens
+
+A web-based explorer for James Webb Space Telescope observations, built with Next.js. Browse JWST imagery, filter by object type and instrument, and view detailed observation data including coordinates, distance, and program information.
+
+## Features
+
+- **Explore Tab**: Browse JWST observations with search, type filters, and instrument filters
+- **Detail Panel**: View full observation metadata, coordinates, and instrument data
+- **Responsive Layout**: Adapts to any screen size with a scrollable detail area and pinned controls
+- **Animated Transitions**: Smooth fade-in animations when selecting observations
+- **Live Data Ready**: Designed to connect to jwstapi.com and api.nasa.gov for real-time observation data
+
+## Tech Stack
+
+- Next.js 14 (App Router)
+- TypeScript
+- React Icons (io5)
+- Tailwind CSS (base only, zero utility classes in components)
+- Geist + Geist Mono fonts
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  app/
+    layout.tsx          # Root layout with navbar and star field
+    page.tsx            # Home page, renders Tabs component
+  components/
+    Navbar.tsx          # Top navigation bar with offline indicator
+    StarField.tsx       # Animated star background
+    Tabs.tsx            # Tab bar (Explore, Telemetry, Sky Map)
+    ExploreTab.tsx      # Parent wiring ExploreLeft + ExploreDetail
+    ExploreLeft.tsx     # 300px left panel with search, filters, card list
+    ExploreDetail.tsx   # Right panel with observation detail view
+```
 
-## Learn More
+## API Integration
 
-To learn more about Next.js, take a look at the following resources:
+The app is designed to connect to:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **jwstapi.com** -- Real JWST observation data
+- **api.nasa.gov** -- Mission updates and metadata
+- **esawebb.org** -- ESA Webb Portal for full observation pages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Currently using mock observation data. Replace the `OBSERVATIONS` array in `ExploreDetail.tsx` with API calls to enable live data.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
