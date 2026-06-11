@@ -71,12 +71,7 @@ export default function Tabs() {
         ) : active === "telemetry" ? (
           <TelemetryTab />
         ) : (
-          <SkyMapTab
-            onViewDetail={(obs) => {
-              setSelected(obs);
-              setActive("explore");
-            }}
-          />
+          <SkyMapTab />
         )}
       </div>
     </div>

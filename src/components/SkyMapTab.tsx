@@ -28,11 +28,7 @@ const HARD_CODED_POSITIONS: Record<number, XY> = {
   6: { x: "5%", y: "62%" }, // WASP-96b
 };
 
-export interface SkyMapTabProps {
-  onViewDetail: (obs: Observation) => void;
-}
-
-export default function SkyMapTab({ onViewDetail }: SkyMapTabProps) {
+export default function SkyMapTab() {
   const mapRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<Observation | null>(null);
 
@@ -72,6 +68,12 @@ export default function SkyMapTab({ onViewDetail }: SkyMapTabProps) {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
       {/* Title section */}
       <div style={{ paddingTop: 4 }}>
         <div
@@ -218,7 +220,10 @@ export default function SkyMapTab({ onViewDetail }: SkyMapTabProps) {
                 width: 14,
                 height: 14,
                 borderRadius: "50%",
-                transform: isSel ? "translate(-50%, -50%) scale(1.5)" : "translate(-50%, -50%) scale(1)",
+                transform: isSel
+                  ? "translate(-50%, -50%) scale(1.8)"
+                  : "translate(-50%, -50%) scale(1)",
+                outline: isSel ? "2px solid white" : "none",
                 background: c,
                 boxShadow: `0 0 10px ${c}88`,
                 cursor: "pointer",
@@ -227,10 +232,7 @@ export default function SkyMapTab({ onViewDetail }: SkyMapTabProps) {
               }}
               onMouseEnter={() => setHoveredId(obs.id)}
               onMouseLeave={() => setHoveredId(null)}
-              onClick={() => {
-                setSelected(obs);
-                onViewDetail(obs);
-              }}
+              onClick={() => setSelected(obs)}
               role="button"
               aria-label={`Select ${obs.title}`}
             />
@@ -292,148 +294,103 @@ export default function SkyMapTab({ onViewDetail }: SkyMapTabProps) {
         })}
       </div>
 
-      {/* Mini detail */}
-      {selected ? (
-        <div
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(96,165,250,0.2)",
-            borderRadius: 10,
-            padding: 16,
-            display: "flex",
-            gap: 14,
-            alignItems: "flex-start",
-          }}
-        >
-          {/* Left: title + badge + description */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 800,
-                  color: "#e2e8f0",
-                  lineHeight: 1.3,
-                }}
-              >
-                {selected.title}
-              </div>
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  letterSpacing: "0.06em",
-                  padding: "3px 10px",
-                  borderRadius: 999,
-                  background: TYPE_PALETTE[selected.type]?.bg ?? "rgba(100,116,139,0.15)",
-                  color: TYPE_PALETTE[selected.type]?.color ?? "#94a3b8",
-                  border: `1px solid ${TYPE_PALETTE[selected.type]?.border ?? "rgba(100,116,139,0.4)"}`,
-                  fontFamily: "var(--font-geist-mono), monospace",
-                }}
-              >
-                {selected.type}
-              </span>
+      {!selected ? (
+        <div style={{
+          textAlign: 'center',
+          padding: '32px',
+          fontSize: '12px',
+          color: '#334155'
+        }}>
+          ✦ Select any object on the map to preview its data
+        </div>
+      ) : (
+        <div style={{
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(96,165,250,0.2)',
+          borderRadius: '12px',
+          padding: '20px',
+          marginTop: '16px',
+          display: 'flex',
+          gap: '20px',
+          animation: 'fadeIn 0.3s ease'
+        }}>
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontSize: '11px',
+              color: '#64748b',
+              letterSpacing: '0.12em',
+              marginBottom: '6px'
+            }}>
+              {selected.type.toUpperCase()}
             </div>
-            <div
-              style={{
-                fontSize: 12,
-                color: "#94a3b8",
-                lineHeight: 1.6,
-                maxWidth: 640,
-              }}
-            >
+            <div style={{
+              fontSize: '20px',
+              color: '#f8fafc',
+              fontWeight: 700,
+              marginBottom: '8px'
+            }}>
+              {selected.title}
+            </div>
+            <div style={{
+              fontSize: '13px',
+              color: '#94a3b8',
+              lineHeight: 1.7
+            }}>
               {selected.description}
             </div>
+            <button
+              onClick={() => setSelected(null)}
+              style={{
+                marginTop: '12px',
+                padding: '6px 14px',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#94a3b8',
+                borderRadius: '6px',
+                fontSize: '12px',
+                cursor: 'pointer'
+              }}
+            >
+              ✕ Close
+            </button>
           </div>
-
-          {/* Right: RA/Dec/Distance/Program */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 10,
-              alignSelf: "stretch",
-              minWidth: 320,
-            }}
-          >
+          <div style={{
+            width: '200px',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '8px',
+            alignContent: 'start'
+          }}>
             {[
-              { label: "R.A.", value: selected.ra },
-              { label: "Dec.", value: selected.dec },
-              { label: "Distance", value: selected.distance },
-              { label: "Program", value: selected.program },
-            ].map((row) => (
-              <div
-                key={row.label}
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 8,
-                  padding: "8px 10px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 10,
-                    color: "#64748b",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    fontFamily: "var(--font-geist-mono), monospace",
-                    marginBottom: 4,
-                  }}
-                >
-                  {row.label}
+              ['📍', 'Distance', selected.distance],
+              ['📅', 'Observed', selected.date],
+              ['📡', 'Instrument', selected.instrument],
+              ['🔭', 'Program', selected.program],
+            ].map(([icon, label, value]) => (
+              <div key={String(label)} style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '8px',
+                padding: '10px'
+              }}>
+                <div style={{
+                  fontSize: '10px',
+                  color: '#64748b',
+                  marginBottom: '3px'
+                }}>
+                  {icon} {label}
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#e2e8f0",
-                    fontFamily: "var(--font-geist-mono), monospace",
-                  }}
-                >
-                  {row.value}
+                <div style={{
+                  fontSize: '11px',
+                  color: '#e2e8f0',
+                  fontFamily: 'monospace',
+                  fontWeight: 600
+                }}>
+                  {String(value)}
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Full details button */}
-          <div style={{ width: 200, flexShrink: 0, alignSelf: "center" }}>
-            <button
-              onClick={() => onViewDetail(selected)}
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: "1px solid rgba(255,255,255,0.08)",
-                background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
-                color: "#ffffff",
-                fontSize: 12,
-                fontWeight: 800,
-                cursor: "pointer",
-                outline: "none",
-                fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-              }}
-            >
-              View Full Details →
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div
-          style={{
-            height: 84,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 10,
-            background: "rgba(255,255,255,0.02)",
-            border: "1px dashed rgba(255,255,255,0.08)",
-            color: "#334155",
-            fontSize: 12,
-            letterSpacing: "0.02em",
-          }}
-        >
-          Select any object on the map to preview its data.
         </div>
       )}
     </div>
