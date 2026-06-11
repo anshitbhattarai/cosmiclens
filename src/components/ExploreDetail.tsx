@@ -75,7 +75,8 @@ export const OBSERVATIONS: Observation[] = [
     instrument: "NIRCam + MIRI",
     date: "2022-07-12",
     distance: "290M light-years",
-    description: "Four galaxies locked in a gravitational cosmic dance, reshaping each other.",
+    description:
+      "Webb's infrared vision pierces through dust to reveal dark matter distribution and hidden structure in this stunning galaxy group observation.",
     program: "Early Release Observations",
     ra: "22h 36m",
     dec: "+33° 58′",
@@ -166,11 +167,32 @@ function DataCell({ icon, label, value }: { icon: React.ReactNode; label: string
 export default function ExploreDetail({ selected, onClose }: ExploreDetailProps) {
   const [mounted, setMounted] = useState(false);
 
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const [imgLoading, setImgLoading] = useState(false);
+
   useEffect(() => {
     setMounted(false);
     const t = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(t);
   }, [selected]);
+
+  useEffect(() => {
+    if (!selected) {
+      setImgUrl(null);
+      return;
+    }
+
+    setImgLoading(true);
+    setImgUrl(null);
+
+    fetch(`/api/jwst?q=${encodeURIComponent(selected.title)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.url) setImgUrl(data.url);
+      })
+      .catch(() => {})
+      .finally(() => setImgLoading(false));
+  }, [selected, selected?.id]);
 
   return (
     <>
@@ -332,27 +354,89 @@ export default function ExploreDetail({ selected, onClose }: ExploreDetailProps)
               </p>
 
               {/* Image placeholder */}
-              <div style={{
-                height: "180px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #0f172a, #1e1b4b)",
-                border: "1px solid rgba(167,139,250,0.2)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                marginBottom: "20px",
-              }}>
-                <IoTelescopeSharp size={32} style={{ color: "#64748b" }} />
-                <span style={{
-                  fontSize: "11px",
-                  color: "#64748b",
-                  letterSpacing: "0.06em",
-                  fontFamily: "var(--font-geist-mono), monospace",
-                }}>
-                  JWST Image
-                </span>
+              <div
+                style={{
+                  height: "280px",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(167,139,250,0.2)",
+                  marginBottom: "20px",
+                  overflow: "hidden",
+                  position: "relative",
+                  background: "linear-gradient(135deg, #0f172a, #1e1b4b)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {imgLoading && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 999,
+                        border: "2px solid rgba(255,255,255,0.15)",
+                        borderTopColor: "#a78bfa",
+                        animation: "detailFadeIn 0.3s ease forwards",
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: "#64748b",
+                        fontFamily: "var(--font-geist-mono), monospace",
+                      }}
+                    >
+                      Fetching image…
+                    </span>
+                  </div>
+                )}
+
+                {!imgLoading && imgUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={imgUrl}
+                    alt={selected?.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                    }}
+                  />
+                )}
+
+                {!imgLoading && !imgUrl && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      padding: 16,
+                      textAlign: "center",
+                    }}
+                  >
+                    <IoTelescopeSharp size={28} style={{ color: "#64748b" }} />
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: "#64748b",
+                        fontFamily: "var(--font-geist-mono), monospace",
+                      }}
+                    >
+                      No image found for this target
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Data grid: 3 cols x 2 rows */}

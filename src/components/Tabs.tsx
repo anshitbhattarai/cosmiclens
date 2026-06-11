@@ -3,26 +3,24 @@
 import { useState } from "react";
 import { IoPlanetSharp, IoStatsChartSharp, IoCompassSharp } from "react-icons/io5";
 import ExploreTab from "./ExploreTab";
+import TelemetryTab from "./TelemetryTab";
+import SkyMapTab from "./SkyMapTab";
+import type { Observation } from "./ExploreDetail";
 
 const TABS = [
-  { id: "explore",   label: "Explore",   Icon: IoPlanetSharp     },
+  { id: "explore", label: "Explore", Icon: IoPlanetSharp },
   { id: "telemetry", label: "Telemetry", Icon: IoStatsChartSharp },
-  { id: "skymap",    label: "Sky Map",   Icon: IoCompassSharp    },
+  { id: "skymap", label: "Sky Map", Icon: IoCompassSharp },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
 
-const PLACEHOLDERS: Record<"telemetry" | "skymap", string> = {
-  telemetry: "Telemetry coming soon",
-  skymap:    "Sky Map coming soon",
-};
-
 export default function Tabs() {
   const [active, setActive] = useState<TabId>("explore");
+  const [selected, setSelected] = useState<Observation | null>(null);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
-
       {/* ── Tab bar ── */}
       <div
         style={{
@@ -69,24 +67,18 @@ export default function Tabs() {
       {/* ── Tab content ── */}
       <div style={{ flex: 1, minHeight: 0 }}>
         {active === "explore" ? (
-          <ExploreTab />
+            <ExploreTab selected={selected} onSelect={(obs) => setSelected(obs)} />
+        ) : active === "telemetry" ? (
+          <TelemetryTab />
         ) : (
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            color: "#475569",
-            fontSize: "12px",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            fontFamily: "var(--font-geist-mono), monospace",
-          }}>
-            {PLACEHOLDERS[active]}
-          </div>
+          <SkyMapTab
+            onViewDetail={(obs) => {
+              setSelected(obs);
+              setActive("explore");
+            }}
+          />
         )}
       </div>
-
     </div>
   );
 }

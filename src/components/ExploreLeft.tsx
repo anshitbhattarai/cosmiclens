@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { IoSearchSharp } from "react-icons/io5";
+"use client";
+
+import { useState, useEffect } from "react";
+import { IoSearchSharp, IoVideocamSharp } from "react-icons/io5";
 import type { Observation } from "./ExploreDetail";
 import { OBSERVATIONS } from "./ExploreDetail";
 
@@ -147,6 +149,23 @@ export default function ExploreLeft({ selected, onSelect }: ExploreLeftProps) {
   const [searchFocus, setSearchFocus] = useState(false);
   const [activeType,  setActiveType]  = useState("All");
   const [activeInst,  setActiveInst]  = useState("All");
+  const [apod, setApod] = useState<{
+    title: string;
+    url: string;
+    date: string;
+    media_type: string;
+  } | null>(null);
+  const [apodLoading, setApodLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/apod")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.error) setApod(data);
+      })
+      .catch(() => {})
+      .finally(() => setApodLoading(false));
+  }, []);
 
   const filtered = OBSERVATIONS.filter((o) => {
     const matchSearch = o.title.toLowerCase().includes(search.toLowerCase());
@@ -168,6 +187,92 @@ export default function ExploreLeft({ selected, onSelect }: ExploreLeftProps) {
 
       {/* ── Top controls ── */}
       <div style={{ padding: "16px 14px 12px", display: "flex", flexDirection: "column", gap: "14px" }}>
+
+        {/* APOD Card */}
+        {apodLoading && (
+          <div style={{
+            padding: "10px 12px",
+            background: "rgba(255,255,255,0.03)",
+            borderRadius: "10px",
+            marginBottom: "12px",
+            fontSize: "11px",
+            color: "#475569",
+          }}>
+            Loading today&apos;s image...
+          </div>
+        )}
+        {!apodLoading && apod && (
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              padding: "10px",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "10px",
+              marginBottom: "12px",
+              cursor: "pointer",
+            }}
+            onClick={() => window.open("https://apod.nasa.gov/apod/", "_blank")}
+          >
+            {apod.media_type === "image" ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={apod.url}
+                alt={apod.title}
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  objectFit: "cover",
+                  borderRadius: "6px",
+                  flexShrink: 0,
+                }}
+              />
+            ) : (
+              <div style={{
+                width: "60px",
+                height: "60px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "24px",
+                background: "rgba(255,255,255,0.05)",
+                borderRadius: "6px",
+                flexShrink: 0,
+              }}>
+                <IoVideocamSharp size={20} style={{ color: "#64748b" }} />
+              </div>
+            )}
+            <div style={{ overflow: "hidden" }}>
+              <div style={{
+                fontSize: "10px",
+                color: "#60a5fa",
+                letterSpacing: "0.1em",
+                marginBottom: "3px",
+              }}>
+                TODAY&apos;S APOD
+              </div>
+              <div style={{
+                fontSize: "12px",
+                color: "#e2e8f0",
+                lineHeight: "1.4",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}>
+                {apod.title}
+              </div>
+              <div style={{
+                fontSize: "10px",
+                color: "#64748b",
+                marginTop: "3px",
+              }}>
+                {apod.date}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Search */}
         <div style={{ position: "relative" }}>

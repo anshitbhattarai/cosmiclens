@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "CosmicLens — JWST Explorer",
+  title: "CosmicLens -- JWST Explorer",
   description: "Explore James Webb Space Telescope observations",
 };
 
