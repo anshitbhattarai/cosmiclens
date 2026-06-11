@@ -167,12 +167,6 @@ workflow for Stardance Hack Club 2026.
 
 ---
 
-## 📸 Screenshots
-
-> Add screenshots after deployment
-
----
-
 ## 📋 Dev Log
 
 | Date | What was built |
