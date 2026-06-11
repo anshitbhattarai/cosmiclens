@@ -1,20 +1,19 @@
-# 🔭 CosmicLens — James Webb Space Telescope Explorer
+#  CosmicLens — James Webb Space Telescope Explorer
 
 > An interactive web explorer for real NASA James Webb
 > Space Telescope observations. Browse JWST discoveries,
 > explore telescope telemetry, and navigate the sky map
 > — all powered by live NASA APIs.
 
-![CosmicLens Preview](./public/preview.png)
 
 **Built for:** Stardance Hack Club 2026
 **Stack:** Next.js 14 · TypeScript · NASA APIs
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🌌 Explore Tab
+###  Explore Tab
 - Browse 6 real JWST observations with live NASA images
 - Filter by object type (Nebula, Galaxy, Exoplanet, etc.)
 - Filter by instrument (NIRCam, MIRI, NIRISS)
@@ -25,14 +24,14 @@
   in the sidebar via NASA APOD API
 - Direct link to ESA Webb Portal for each observation
 
-### 📊 Telemetry Tab
+###  Telemetry Tab
 - Real JWST instrument temperatures
   (NIRCam, NIRSpec, MIRI, FGS/NIRISS)
 - Live telescope status and orbit information
 - Warm/cool side spacecraft temperatures
 - Mission statistics and observation counts
 
-### 🗺️ Sky Map Tab
+###  Sky Map Tab
 - Interactive celestial coordinate map
 - All 6 observations plotted by RA/Dec position
 - Color-coded by object type with hover tooltips
@@ -41,7 +40,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Technology | Purpose |
 |---|---|
@@ -55,7 +54,7 @@
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -92,7 +91,7 @@ Get a free API key at [https://api.nasa.gov](https://api.nasa.gov)
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 src/
@@ -117,7 +116,7 @@ src/
 
 ---
 
-## 🔌 NASA APIs Used
+##  NASA APIs Used
 
 ### APOD — Astronomy Picture of the Day
 ```
@@ -135,10 +134,7 @@ images for each observation in the detail panel.
 
 ---
 
-## 🏗️ How I Built This
-
-CosmicLens was built using an AI-assisted development
-workflow for Stardance Hack Club 2026.
+##  How I Built This
 
 **My role in the process:**
 - Designed the overall architecture and feature set
@@ -164,20 +160,6 @@ workflow for Stardance Hack Club 2026.
 - How JWST instruments work (NIRCam, MIRI, NIRISS)
 - What WASP-96b's transmission spectrum actually shows
 - Why Stephan's Quintet isn't in NASA's image library
-
----
-
-## 📋 Dev Log
-
-| Date | What was built |
-|---|---|
-| Jun 10 | Project setup, StarField, Navbar, Tabs |
-| Jun 10 | Explore tab left panel with filters |
-| Jun 10 | Explore detail panel + card wiring |
-| Jun 10 | Telemetry tab |
-| Jun 11 | Sky Map tab |
-| Jun 11 | NASA API integration (APOD + Image Library) |
-| Jun 11 | Image debugging + confirmed NASA image IDs |
 
 ---
 
